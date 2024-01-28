@@ -54,9 +54,13 @@ static int ft004b_callback(r_device *decoder, bitbuffer_t *bitbuffer)
     int temp_raw = ((msg[4] & 0x7) << 8) | msg[3];
     temperature  = (temp_raw * 0.05f) - 40.0f;
 
+    char serial_str[8];
+    sprintf(serial_str, "%02X%02X", msg[1], msg[2]);
+
     /* clang-format off */
     data = data_make(
             "model",            "",             DATA_STRING, "FT-004B",
+            "id",               "",             DATA_STRING, serial_str,
             "temperature_C",    "Temperature",  DATA_FORMAT, "%.1f", DATA_DOUBLE, temperature,
             NULL);
     /* clang-format on */
@@ -67,6 +71,7 @@ static int ft004b_callback(r_device *decoder, bitbuffer_t *bitbuffer)
 
 static char const *const output_fields[] = {
         "model",
+        "id",
         "temperature_C",
         NULL,
 };
